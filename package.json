@@ -1,0 +1,29 @@
+{
+  "name": "kurama-terminal",
+  "version": "0.1.0",
+  "description": "Animated Kurama companion for macOS terminals",
+  "type": "module",
+  "bin": {
+    "kurama": "bin/kurama.mjs"
+  },
+  "files": [
+    "bin/",
+    "Kurama.swift",
+    "Launcher.swift",
+    "kurama",
+    "shell-integration.zsh",
+    "assets/"
+  ],
+  "os": ["darwin"],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saivarun1410/kurama-terminal.git"
+  },
+  "homepage": "https://github.com/saivarun1410/kurama-terminal#readme",
+  "bugs": "https://github.com/saivarun1410/kurama-terminal/issues",
+  "keywords": ["kurama", "terminal", "pet", "macos", "animated", "naruto"],
+  "license": "UNLICENSED"
+}

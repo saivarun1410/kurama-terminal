@@ -1,6 +1,6 @@
 # Kurama terminal companion
 
-![Kurama beside a terminal](docs/previews/terminal-hero.png)
+![Kurama beside a terminal](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/terminal-hero.png)
 
 A draggable, animated macOS Kurama that floats beside your terminal. It blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble when closed. Right click the pet for controls. Its position is remembered.
 
@@ -8,17 +8,27 @@ A draggable, animated macOS Kurama that floats beside your terminal. It blinks e
 
 These are staged terminal previews using the same Kurama sprites shipped with the app. No personal desktop or terminal data appears in them.
 
-![Animated preview of Kurama blinking, tilting, covering its eyes, and waving](docs/previews/kurama-in-action.gif)
+![Animated preview of Kurama blinking, tilting, covering its eyes, and waving](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/kurama-in-action.gif)
 
 ### Every expression
 
-![Six Kurama expressions: idle, blink, left tilt, right tilt, privacy, and goodbye](docs/previews/expression-gallery.png)
+![Six Kurama expressions: idle, blink, left tilt, right tilt, privacy, and goodbye](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/expression-gallery.png)
 
 | Privacy mode | Goodbye wave |
 | --- | --- |
-| ![Kurama covers its eyes beside a password prompt](docs/previews/privacy-mode.png) | ![Kurama waves goodbye after quitting](docs/previews/goodbye-wave.png) |
+| ![Kurama covers its eyes beside a password prompt](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/privacy-mode.png) | ![Kurama waves goodbye after quitting](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/goodbye-wave.png) |
 
-## Install on macOS
+## Install with npm
+
+Requires macOS, Node.js 18 or newer, and Apple's Swift compiler (install Xcode Command Line Tools with `xcode-select --install` if needed).
+
+```zsh
+npx kurama-terminal install
+```
+
+This builds the native pet, adds the Kurama app to `~/Applications`, starts its login agent, and adds the privacy and goodbye shell hooks to new zsh sessions. Open a new terminal afterward to use `kurama` directly. If your global npm directory is writable, `npm install -g kurama-terminal` followed by `kurama install` works too.
+
+## Build from source
 
 ```zsh
 git clone https://github.com/saivarun1410/kurama-terminal.git
@@ -33,10 +43,12 @@ python3 install-launcher.py
 To control Kurama:
 
 ```zsh
-./kurama privacy on
-./kurama privacy off
-./kurama wave
-./kurama quit
+kurama start
+kurama status
+kurama privacy on
+kurama privacy off
+kurama wave
+kurama quit
 ```
 
 ## Easy ways to launch
@@ -50,7 +62,7 @@ The installer copies the runtime to `~/Library/Application Support/KuramaTermina
 
 This is an unofficial fan project. The character artwork was adapted from a user supplied reference image; no ownership of the Naruto character is claimed.
 
-For every new zsh session, add this line to `~/.zshrc`:
+The npm installer adds the shell hook automatically. For a source install, add this line to `~/.zshrc`:
 
 ```zsh
 source /absolute/path/to/kurama-terminal/shell-integration.zsh

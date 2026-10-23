@@ -1,5 +1,7 @@
-# Source this from ~/.zshrc after building Kurama.
-export PATH="${${(%):-%x}:A:h}:$PATH"
+# Source this from ~/.zshrc after installing Kurama.
+if ! whence -p kurama >/dev/null 2>&1; then
+  export PATH="$PATH:${${(%):-%x}:A:h}"
+fi
 autoload -Uz add-zsh-hook
 
 _kurama_before_command() {
