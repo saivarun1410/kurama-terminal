@@ -161,8 +161,8 @@ terminal(goodbye, (84, 287, 1316, 740), [
 ], text_size=25)
 sprite(goodbye, "wave", (887, 346, 1266, 727))
 d = ImageDraw.Draw(goodbye)
-d.rounded_rectangle((1106, 326, 1265, 388), 22, fill=(255, 246, 228))
-d.text((1141, 338), "Bye!", font=font(34), fill=(104, 39, 28))
+d.rounded_rectangle((761, 326, 890, 388), 22, fill=(255, 246, 228))
+d.text((791, 338), "Bye!", font=font(34), fill=(104, 39, 28))
 footer(d, 1400, 820)
 save(goodbye, "goodbye-wave.png")
 
@@ -175,6 +175,10 @@ def animation_frame(pose, label):
         (f"% {label}", ORANGE),
     ], text_size=23)
     sprite(frame, pose, (570, 119, 848, 451))
+    if pose == "wave":
+        draw = ImageDraw.Draw(frame)
+        draw.rounded_rectangle((465, 151, 552, 192), 16, fill=(255, 246, 228))
+        draw.text((483, 156), "Bye!", font=font(21), fill=(104, 39, 28))
     return frame.convert("RGB")
 
 

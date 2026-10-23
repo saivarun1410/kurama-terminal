@@ -6,7 +6,7 @@ Code contributions are welcome under the [MIT license](LICENSE) and [contributin
 
 ![Kurama beside a terminal](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/terminal-hero.png)
 
-A draggable, animated macOS Kurama that floats beside your terminal. It blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble when closed. Right click the pet for controls. Its position is remembered.
+A draggable, animated macOS Kurama that floats beside your terminal. It blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble on its left when closed. Right click the pet for controls. Its position is remembered.
 
 ## Screenshots and animation
 
