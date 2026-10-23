@@ -16,6 +16,34 @@ private func onScreen(_ point: NSPoint, size: NSSize, visible: NSRect) -> NSPoin
     )
 }
 
+private func decodedSprite(at url: URL) -> NSImage? {
+    guard let source = NSImage(contentsOf: url),
+          let bitmap = NSBitmapImageRep(
+              bitmapDataPlanes: nil,
+              pixelsWide: 336,
+              pixelsHigh: 360,
+              bitsPerSample: 8,
+              samplesPerPixel: 4,
+              hasAlpha: true,
+              isPlanar: false,
+              colorSpaceName: .deviceRGB,
+              bytesPerRow: 0,
+              bitsPerPixel: 0
+          ),
+          let graphics = NSGraphicsContext(bitmapImageRep: bitmap) else { return nil }
+
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = graphics
+    source.draw(in: NSRect(x: 0, y: 0, width: 336, height: 360),
+                from: .zero, operation: .sourceOver, fraction: 1)
+    graphics.flushGraphics()
+    NSGraphicsContext.restoreGraphicsState()
+
+    let decoded = NSImage(size: NSSize(width: 168, height: 180))
+    decoded.addRepresentation(bitmap)
+    return decoded
+}
+
 final class PetView: NSView {
     var images: [String: NSImage] = [:]
     var pose = "idle"
@@ -92,7 +120,7 @@ final class PetApp: NSObject, NSApplicationDelegate {
         pet = PetView(frame: frame)
         let assetRoot = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent().appendingPathComponent("assets")
         for name in ["idle", "blink", "tilt", "tilt_opposite", "privacy", "wave"] {
-            pet.images[name] = NSImage(contentsOf: assetRoot.appendingPathComponent("\(name).png"))
+            pet.images[name] = decodedSprite(at: assetRoot.appendingPathComponent("\(name).png"))
         }
         window.contentView = pet
         if let mainScreen = NSScreen.main {
