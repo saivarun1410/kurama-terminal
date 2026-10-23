@@ -1,6 +1,22 @@
 # Kurama terminal companion
 
-A draggable, animated macOS Kurama made from `~/Downloads/Kurama.jpg`. It floats above windows, blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble when closed. Right click the pet for controls. Its position is remembered.
+![Kurama beside a terminal](docs/previews/terminal-hero.png)
+
+A draggable, animated macOS Kurama that floats beside your terminal. It blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble when closed. Right click the pet for controls. Its position is remembered.
+
+## Screenshots and animation
+
+These are staged terminal previews using the same Kurama sprites shipped with the app. No personal desktop or terminal data appears in them.
+
+![Animated preview of Kurama blinking, tilting, covering its eyes, and waving](docs/previews/kurama-in-action.gif)
+
+### Every expression
+
+![Six Kurama expressions: idle, blink, left tilt, right tilt, privacy, and goodbye](docs/previews/expression-gallery.png)
+
+| Privacy mode | Goodbye wave |
+| --- | --- |
+| ![Kurama covers its eyes beside a password prompt](docs/previews/privacy-mode.png) | ![Kurama waves goodbye after quitting](docs/previews/goodbye-wave.png) |
 
 ## Install on macOS
 
