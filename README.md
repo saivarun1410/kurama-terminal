@@ -34,10 +34,10 @@ This builds the native pet, adds the Kurama app to `~/Applications`, starts its 
 
 ### Start Kurama with the keyboard
 
-- **Spotlight:** Press **Command–Space**, type **Kurama**, then press **Return**.
-- **Your own keyboard shortcut:** Open the macOS **Shortcuts** app and create a new shortcut named **Start Kurama**. Add the **Open App** action and choose **Kurama**. Open the shortcut's **Details** (the ⓘ button), click **Add Keyboard Shortcut**, and press a combination you want to use, such as **Control–Option–K**. Press that combination from any app to launch Kurama. Choose another combination if macOS says it is already in use.
+- **Your own keyboard shortcut (works even when Spotlight does not find Kurama):** Open the macOS **Shortcuts** app and create a shortcut named **Start Kurama**. Add the **Run Shell Script** action and enter `/usr/bin/open "$HOME/Applications/Kurama.app"`. Open the shortcut's **Details** (the ⓘ button), click **Add Keyboard Shortcut**, and press a combination such as **Control–Option–K**. Press that combination from any app to launch Kurama. Choose another combination if macOS says it is already in use.
+- **Spotlight, if it finds the app:** Press **Command–Space**, type **Kurama**, then press **Return**. If only web results appear, use the custom shortcut above or open `~/Applications/Kurama.app` in Finder.
 
-Install Kurama first so `~/Applications/Kurama.app` is available to Spotlight and the **Open App** action. [Apple's Shortcuts guide](https://support.apple.com/guide/shortcuts-mac/apd163eb9f95/mac) shows where to set a keyboard shortcut.
+Install Kurama first so `~/Applications/Kurama.app` exists. [Apple's Shortcuts guide](https://support.apple.com/guide/shortcuts-mac/apd163eb9f95/mac) shows where to set a keyboard shortcut.
 
 ## Build from source
 
@@ -64,7 +64,7 @@ kurama quit
 
 ## Easy ways to launch
 
-- Use the [Spotlight keys or your own keyboard shortcut](#start-kurama-with-the-keyboard).
+- Use [your own keyboard shortcut](#start-kurama-with-the-keyboard), which also works when Spotlight does not list Kurama.
 - Open **Kurama** from your Applications folder, or drag it to the Dock.
 - In a new terminal, type `kurama` or `kurama start`.
 - Kurama starts automatically at login through its user launch agent.
