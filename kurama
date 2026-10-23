@@ -1,0 +1,48 @@
+#!/bin/zsh
+set -u
+KURAMA_HOME="${0:A:h}"
+KURAMA_STATE="$HOME/Library/Application Support/KuramaTerminal"
+KURAMA_SERVICE="gui/$(id -u)/dev.varun.kurama-terminal"
+mkdir -p "$KURAMA_STATE"
+
+send_command() {
+  local tmp="$KURAMA_STATE/command.$$"
+  print -r -- "$1 $(uuidgen)" > "$tmp"
+  mv -f "$tmp" "$KURAMA_STATE/command"
+}
+
+is_running() {
+  local pid
+  if [[ -r "$KURAMA_STATE/pid" ]]; then
+    pid="$(<"$KURAMA_STATE/pid")"
+    [[ "$pid" == <-> ]] && kill -0 "$pid" 2>/dev/null && return 0
+  fi
+  launchctl print "$KURAMA_SERVICE" 2>/dev/null | grep -q 'state = running'
+}
+
+case "${1:-start}" in
+  start)
+    if ! is_running; then
+      [[ -x "$KURAMA_HOME/kurama-app" ]] || { print -u2 'Kurama is not built. Run ./build.sh first.'; exit 1; }
+      [[ -f "$KURAMA_STATE/command" ]] && rm "$KURAMA_STATE/command"
+      if launchctl print "$KURAMA_SERVICE" >/dev/null 2>&1; then
+        launchctl kickstart "$KURAMA_SERVICE"
+      else
+        nohup "$KURAMA_HOME/kurama-app" >/dev/null 2>&1 </dev/null &!
+      fi
+    fi
+    ;;
+  privacy)
+    case "${2:-}" in
+      on) send_command privacy-on ;;
+      off) send_command privacy-off ;;
+      *) print -u2 'Usage: kurama privacy on|off'; exit 2 ;;
+    esac
+    ;;
+  wave) send_command wave ;;
+  quit|stop) send_command quit ;;
+  status)
+    if is_running; then print 'Kurama is running'; else print 'Kurama is stopped'; fi
+    ;;
+  *) print -u2 'Usage: kurama start|privacy on|privacy off|wave|quit|status'; exit 2 ;;
+esac
