@@ -1,6 +1,6 @@
 {
   "name": "kurama-terminal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Animated Kurama companion for macOS terminals",
   "type": "module",
   "bin": {
