@@ -32,6 +32,13 @@ npx kurama-terminal install
 
 This builds the native pet, adds the Kurama app to `~/Applications`, starts its login agent, and adds the privacy and goodbye shell hooks to new zsh sessions. Open a new terminal afterward to use `kurama` directly. If your global npm directory is writable, `npm install -g kurama-terminal` followed by `kurama install` works too.
 
+### Start Kurama with the keyboard
+
+- **Spotlight:** Press **Command–Space**, type **Kurama**, then press **Return**.
+- **Your own keyboard shortcut:** Open the macOS **Shortcuts** app and create a new shortcut named **Start Kurama**. Add the **Open App** action and choose **Kurama**. Open the shortcut's **Details** (the ⓘ button), click **Add Keyboard Shortcut**, and press a combination you want to use, such as **Control–Option–K**. Press that combination from any app to launch Kurama. Choose another combination if macOS says it is already in use.
+
+Install Kurama first so `~/Applications/Kurama.app` is available to Spotlight and the **Open App** action. [Apple's Shortcuts guide](https://support.apple.com/guide/shortcuts-mac/apd163eb9f95/mac) shows where to set a keyboard shortcut.
+
 ## Build from source
 
 ```zsh
@@ -57,7 +64,7 @@ kurama quit
 
 ## Easy ways to launch
 
-- Press **Command–Space**, type **Kurama**, and press Return. The launcher lives in `~/Applications/Kurama.app`.
+- Use the [Spotlight keys or your own keyboard shortcut](#start-kurama-with-the-keyboard).
 - Open **Kurama** from your Applications folder, or drag it to the Dock.
 - In a new terminal, type `kurama` or `kurama start`.
 - Kurama starts automatically at login through its user launch agent.
