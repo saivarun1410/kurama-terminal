@@ -1,5 +1,9 @@
 # Kurama terminal companion
 
+[npm package](https://www.npmjs.com/package/kurama-terminal) · [GitHub source](https://github.com/saivarun1410/kurama-terminal)
+
+Code contributions are welcome under the [MIT license](LICENSE) and [contributing guide](CONTRIBUTING.md). Character artwork has a [separate rights notice](ASSET_POLICY.md).
+
 ![Kurama beside a terminal](https://raw.githubusercontent.com/saivarun1410/kurama-terminal/main/docs/previews/terminal-hero.png)
 
 A draggable, animated macOS Kurama that floats beside your terminal. It blinks every 1–2 seconds, alternates left and right head tilts about every 5 seconds, covers its eyes in privacy mode, and waves with a goodbye bubble when closed. Right click the pet for controls. Its position is remembered.

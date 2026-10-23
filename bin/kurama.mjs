@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packageVersion = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8')).version;
 const support = path.join(os.homedir(), 'Library', 'Application Support', 'KuramaTerminal');
 const runtime = path.join(support, 'runtime');
 const runtimeCommand = path.join(runtime, 'kurama');
@@ -83,7 +84,7 @@ function makeApp() {
 <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
 <key>CFBundleName</key><string>Kurama</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.1.0</string>
+<key>CFBundleShortVersionString</key><string>${packageVersion}</string>
 <key>CFBundleVersion</key><string>1</string>
 <key>LSUIElement</key><true/>
 </dict></plist>
@@ -150,7 +151,7 @@ Usage:
 try {
   const [command = 'start', ...args] = process.argv.slice(2);
   if (command === 'help' || command === '--help' || command === '-h') help();
-  else if (command === 'version' || command === '--version' || command === '-v') console.log('0.1.0');
+  else if (command === 'version' || command === '--version' || command === '-v') console.log(packageVersion);
   else {
     requireMac();
     if (command === 'install') install();

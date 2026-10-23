@@ -1,6 +1,6 @@
 {
   "name": "kurama-terminal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Animated Kurama companion for macOS terminals",
   "type": "module",
   "bin": {
@@ -12,6 +12,9 @@
     "Launcher.swift",
     "kurama",
     "shell-integration.zsh",
+    "LICENSE",
+    "ASSET_POLICY.md",
+    "CONTRIBUTING.md",
     "assets/"
   ],
   "os": ["darwin"],
@@ -25,5 +28,5 @@
   "homepage": "https://github.com/saivarun1410/kurama-terminal#readme",
   "bugs": "https://github.com/saivarun1410/kurama-terminal/issues",
   "keywords": ["kurama", "terminal", "pet", "macos", "animated", "naruto"],
-  "license": "UNLICENSED"
+  "license": "SEE LICENSE IN LICENSE"
 }

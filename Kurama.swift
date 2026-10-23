@@ -7,6 +7,15 @@ private let commandFile = root.appendingPathComponent("command")
 private let pidFile = root.appendingPathComponent("pid")
 private let positionFile = root.appendingPathComponent("position")
 
+private func onScreen(_ point: NSPoint, size: NSSize, visible: NSRect) -> NSPoint {
+    let maxX = max(visible.minX, visible.maxX - size.width)
+    let maxY = max(visible.minY, visible.maxY - size.height)
+    return NSPoint(
+        x: min(max(point.x, visible.minX), maxX),
+        y: min(max(point.y, visible.minY), maxY)
+    )
+}
+
 final class PetView: NSView {
     var images: [String: NSImage] = [:]
     var pose = "idle"
@@ -17,23 +26,22 @@ final class PetView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         guard let image = images[pose == "goodbye" ? "wave" : pose] ?? images["idle"], let context = NSGraphicsContext.current?.cgContext else { return }
-        let bob = pose == "idle" ? sin(tick * 2.2) * 2.0 : 0.0
         let tilt = pose == "wave" || pose == "goodbye" ? sin(tick * 13.0) * 0.045 : 0.0
         context.saveGState()
-        context.translateBy(x: 90, y: 100 + bob)
+        context.translateBy(x: 90, y: 100)
         context.rotate(by: tilt)
         image.draw(in: NSRect(x: -84, y: -90, width: 168, height: 180),
                    from: .zero, operation: .sourceOver, fraction: 1)
         context.restoreGState()
         if pose == "goodbye" {
-            let bubble = NSRect(x: 166, y: 135, width: 69, height: 34)
+            let bubble = NSRect(x: 179, y: 135, width: 88, height: 40)
             NSColor(calibratedRed: 1, green: 0.96, blue: 0.88, alpha: 0.96).setFill()
             NSBezierPath(roundedRect: bubble, xRadius: 12, yRadius: 12).fill()
             let style: [NSAttributedString.Key: Any] = [
                 .font: NSFont.boldSystemFont(ofSize: 15),
                 .foregroundColor: NSColor(calibratedRed: 0.48, green: 0.12, blue: 0.05, alpha: 1)
             ]
-            ("Bye!" as NSString).draw(at: NSPoint(x: 182, y: 143), withAttributes: style)
+            ("Bye!" as NSString).draw(at: NSPoint(x: 200, y: 146), withAttributes: style)
         }
     }
 
@@ -44,7 +52,11 @@ final class PetView: NSView {
     override func mouseDragged(with event: NSEvent) {
         guard let start = dragStart, let window = window else { return }
         let point = window.convertPoint(toScreen: event.locationInWindow)
-        window.setFrameOrigin(NSPoint(x: point.x - start.x, y: point.y - start.y))
+        let origin = NSPoint(x: point.x - start.x, y: point.y - start.y)
+        let screen = NSScreen.screens.first(where: { $0.frame.contains(point) }) ?? window.screen ?? NSScreen.main
+        if let screen = screen {
+            window.setFrameOrigin(onScreen(origin, size: window.frame.size, visible: screen.visibleFrame))
+        }
     }
 
     override func mouseUp(with event: NSEvent) {
@@ -63,13 +75,13 @@ final class PetApp: NSObject, NSApplicationDelegate {
     private var poseUntil: Date?
     private var privateMode = false
     private var quitting = false
-    private var lastTick = Date()
+    private var waveTimer: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         try? String(ProcessInfo.processInfo.processIdentifier).write(to: pidFile, atomically: true, encoding: .utf8)
 
-        let frame = NSRect(x: 0, y: 0, width: 245, height: 205)
+        let frame = NSRect(x: 0, y: 0, width: 285, height: 205)
         window = NSWindow(contentRect: frame, styleMask: [.borderless], backing: .buffered, defer: false)
         window.isOpaque = false
         window.backgroundColor = .clear
@@ -83,16 +95,21 @@ final class PetApp: NSObject, NSApplicationDelegate {
             pet.images[name] = NSImage(contentsOf: assetRoot.appendingPathComponent("\(name).png"))
         }
         window.contentView = pet
-        if let screen = NSScreen.main?.visibleFrame {
-            var point = NSPoint(x: screen.maxX - 270, y: screen.minY + 25)
+        if let mainScreen = NSScreen.main {
+            var targetScreen = mainScreen
+            let visible = mainScreen.visibleFrame
+            var point = NSPoint(x: visible.maxX - frame.width - 20, y: visible.minY + 25)
             if let saved = try? String(contentsOf: positionFile, encoding: .utf8) {
                 let values = saved.split(separator: ",").compactMap { Double($0) }
                 if values.count == 2 {
                     let candidate = NSPoint(x: values[0], y: values[1])
-                    if screen.intersects(NSRect(origin: candidate, size: frame.size)) { point = candidate }
+                    if let savedScreen = NSScreen.screens.first(where: { $0.frame.intersects(NSRect(origin: candidate, size: frame.size)) }) {
+                        targetScreen = savedScreen
+                        point = candidate
+                    }
                 }
             }
-            window.setFrameOrigin(point)
+            window.setFrameOrigin(onScreen(point, size: frame.size, visible: targetScreen.visibleFrame))
         }
         let menu = NSMenu()
         let privacy = NSMenuItem(title: "Cover eyes", action: #selector(togglePrivacy), keyEquivalent: "")
@@ -107,10 +124,12 @@ final class PetApp: NSObject, NSApplicationDelegate {
         menu.addItem(quit)
         pet.menu = menu
         window.orderFrontRegardless()
-        Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+        let timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+        timer.tolerance = 0.05
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        waveTimer?.invalidate()
         try? FileManager.default.removeItem(at: pidFile)
     }
 
@@ -130,13 +149,26 @@ final class PetApp: NSObject, NSApplicationDelegate {
     private func show(_ pose: String, for seconds: TimeInterval? = nil) {
         pet.pose = pose
         poseUntil = seconds.map { Date().addingTimeInterval($0) }
+        if pose == "wave" || pose == "goodbye" {
+            if waveTimer == nil {
+                waveTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(animateWave), userInfo: nil, repeats: true)
+                waveTimer?.tolerance = 0.02
+            }
+        } else {
+            waveTimer?.invalidate()
+            waveTimer = nil
+            pet.tick = 0
+        }
+        pet.needsDisplay = true
+    }
+
+    @objc private func animateWave() {
+        pet.tick += 0.1
         pet.needsDisplay = true
     }
 
     @objc private func update() {
         let now = Date()
-        pet.tick += now.timeIntervalSince(lastTick)
-        lastTick = now
         if let raw = try? String(contentsOf: commandFile, encoding: .utf8), raw != lastCommand {
             lastCommand = raw
             switch raw.split(separator: " ").first.map(String.init) {
@@ -159,7 +191,6 @@ final class PetApp: NSObject, NSApplicationDelegate {
                 nextBlink = now.addingTimeInterval(Double.random(in: 1.0...2.0))
             }
         }
-        pet.needsDisplay = true
     }
 }
 
