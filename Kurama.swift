@@ -56,20 +56,20 @@ final class PetView: NSView {
         guard let image = images[pose == "goodbye" ? "wave" : pose] ?? images["idle"], let context = NSGraphicsContext.current?.cgContext else { return }
         let tilt = pose == "wave" || pose == "goodbye" ? sin(tick * 13.0) * 0.045 : 0.0
         context.saveGState()
-        context.translateBy(x: 90, y: 100)
+        context.translateBy(x: pose == "goodbye" ? 195 : 90, y: 100)
         context.rotate(by: tilt)
         image.draw(in: NSRect(x: -84, y: -90, width: 168, height: 180),
                    from: .zero, operation: .sourceOver, fraction: 1)
         context.restoreGState()
         if pose == "goodbye" {
-            let bubble = NSRect(x: 179, y: 135, width: 88, height: 40)
+            let bubble = NSRect(x: 12, y: 135, width: 88, height: 40)
             NSColor(calibratedRed: 1, green: 0.96, blue: 0.88, alpha: 0.96).setFill()
             NSBezierPath(roundedRect: bubble, xRadius: 12, yRadius: 12).fill()
             let style: [NSAttributedString.Key: Any] = [
                 .font: NSFont.boldSystemFont(ofSize: 15),
                 .foregroundColor: NSColor(calibratedRed: 0.48, green: 0.12, blue: 0.05, alpha: 1)
             ]
-            ("Bye!" as NSString).draw(at: NSPoint(x: 200, y: 146), withAttributes: style)
+            ("Bye!" as NSString).draw(at: NSPoint(x: 33, y: 146), withAttributes: style)
         }
     }
 
@@ -109,7 +109,7 @@ final class PetApp: NSObject, NSApplicationDelegate {
         try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         try? String(ProcessInfo.processInfo.processIdentifier).write(to: pidFile, atomically: true, encoding: .utf8)
 
-        let frame = NSRect(x: 0, y: 0, width: 285, height: 205)
+        let frame = NSRect(x: 0, y: 0, width: 180, height: 205)
         window = NSWindow(contentRect: frame, styleMask: [.borderless], backing: .buffered, defer: false)
         window.isOpaque = false
         window.backgroundColor = .clear
@@ -170,6 +170,13 @@ final class PetApp: NSObject, NSApplicationDelegate {
     @objc private func quit() {
         guard !quitting else { return }
         quitting = true
+        let oldFrame = window.frame
+        let expandedSize = NSSize(width: 285, height: oldFrame.height)
+        let desiredOrigin = NSPoint(x: oldFrame.minX - (expandedSize.width - oldFrame.width), y: oldFrame.minY)
+        let screen = window.screen ?? NSScreen.main
+        let origin = screen.map { onScreen(desiredOrigin, size: expandedSize, visible: $0.visibleFrame) } ?? desiredOrigin
+        window.setFrame(NSRect(origin: origin, size: expandedSize), display: true)
+        pet.setFrameSize(expandedSize)
         show("goodbye")
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) { NSApp.terminate(nil) }
     }
